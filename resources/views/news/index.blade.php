@@ -11,7 +11,9 @@
 						<ul>
 							@foreach ($newsList as $news)
 								<div>
-									url:{{$news->url}}
+									<p>url:{{$news->url}}</p>
+									<p>title:{{$news->title}}</p>
+									<p>domain:{{$news->domain}}</p>
 								</div>
 							@endforeach
 						</ul>
