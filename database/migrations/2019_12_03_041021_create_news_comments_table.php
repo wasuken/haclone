@@ -17,6 +17,8 @@ class CreateNewsCommentsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
             $table->bigInteger('news_id');
+            $table->bigInteger('parent_news_comments_id')->nullable();
+            $table->string('contents');
             $table->timestamps();
         });
     }

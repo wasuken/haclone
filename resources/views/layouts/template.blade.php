@@ -18,11 +18,30 @@
 	<body>
 		<div id="app">
 			<!-- ここにヘッダを入れる。 -->
-			<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+			<nav class="navbar bg-dark">
 				<h4><a class="nav-link" href="/">{{ config('app.name', 'Laravel') }}</a></h4>
-				<a class="nav-link" href="/news">new</a>
-				<a class="nav-link" href="/popular">popular</a>
-				<a class="nav-link" href="/comments">comments</a>
+				<div class="row">
+					<a class="nav-link" href="/newsList">new</a>
+					<a class="nav-link" href="/comments">comments</a>
+				</div>
+				<div class="row">
+					@guest
+					<a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+					<a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
+                        @else
+					<a class="nav-link" href="javascript:void(0)">{{ Auth::user()->name }}</a>
+					<div>
+						<a class="nav-link" href="{{ route('logout') }}"
+						   onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+							{{ __('Logout') }}
+						</a>
+						<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+							@csrf
+						</form>
+					</div>
+					@endguest
+				</div>
 			</nav>
 			<main class="py-4">
 				@yield('content')

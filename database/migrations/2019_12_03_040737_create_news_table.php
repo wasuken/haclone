@@ -18,6 +18,8 @@ class CreateNewsTable extends Migration
             $table->string('url');
             $table->string('title');
             $table->string('domain');
+            $table->string('description');
+            $table->bigInteger('user_id');
             $table->timestamps();
         });
     }

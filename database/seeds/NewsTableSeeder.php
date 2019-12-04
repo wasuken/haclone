@@ -21,8 +21,9 @@ class NewsTableSeeder extends Seeder
             'https://dev.classmethod.jp/server-side/algolia/algolia-1st-impression/',
             'https://www.j-cast.com/tv/2019/12/03374179.html',
         ];
+        $user = App\User::all()->first();
         foreach($urls as $url){
-            App\News::urlOnlyInGenerate($url);
+            App\News::urlOnlyInGenerate($url, $user->id);
             sleep(3);
         }
     }
