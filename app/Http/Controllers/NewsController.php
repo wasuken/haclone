@@ -26,7 +26,24 @@ class NewsController extends Controller
     public function show(Request $req)
     {
         $news = News::find($req['id']);
-        $comments = NewsComment::all()->where('news_id', $news->id);
-        return view('news.show', ['news' => $news, 'comments' => $comments]);
+        $commentsTree = $this->commentsToContinuousRecur(NewsComment::whereNull('parent_news_comments_id')->get(),
+                                                     null,
+                                                     $news->id);
+        return view('news.show', ['news' => $news, 'commentsTree' => $commentsTree]);
+    }
+    public function commentsToContinuousRecur($roots, $parent, $newsId)
+    {
+        if(empty($roots)) return [];
+        $result = ['root' => NewsComment::find($parent)];
+        $children = [];
+        foreach($roots as $root){
+            $nextChildren = NewsComment::where('news_id', $newsId)
+                          ->where('parent_news_comments_id', $root->id)
+                          ->get();
+            $children = array_merge($children,
+                                    array($this->commentsToContinuousRecur($nextChildren, $root->id, $newsId)));
+        }
+        $result['children'] = $children;
+        return $result;
     }
 }

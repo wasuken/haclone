@@ -12,8 +12,18 @@ class NewsCommentController extends Controller
     //
     public function index()
     {
-        $comments = NewsComment::all()->sortBy('created_at');
+        $comments = NewsComment::all()->sortBy('create_at');
         return view('comments.index', ['comments' => $comments]);
+    }
+    public function reply(Request $req)
+    {
+        if(!isset($req->parentId)) return back()->withInput();
+        if(!isset($req->newsId)) return back()->withInput();
+
+        $toComment = NewsComment::find($req->parentId);
+        return view('comments.reply', ['parentId' => $req->parentId,
+                                       'newsId' => $req->newsId,
+                                       'toComment' => $toComment]);
     }
     public function create()
     {

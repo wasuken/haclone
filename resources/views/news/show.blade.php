@@ -2,6 +2,7 @@
 
 @php
 use App\User;
+use App\Helpers\Helper;
 @endphp
 @section('content')
 	<div class="row justify-content-center">
@@ -16,14 +17,8 @@ use App\User;
 						<textarea placeholder="コメント" class="form-control" id="commentText" name="commentText" rows="3"></textarea>
 						<input class="btn-primary" type="submit" value="送信"/>
 					</form>
-					@foreach($comments as $comment)
-						<div class="card">
-							<h5 class="card-header">{{User::find($comment->user_id)->name}}</h5>
-							<div class="card-body">
-								{{$comment->contents}}
-							</div>
-						</div>
-					@endforeach
+
+					{!! Helper::CommentsTreeToHtml($commentsTree) !!}
 				</div>
 			</div>
 		</div>

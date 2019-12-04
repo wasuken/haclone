@@ -2,6 +2,7 @@
 
 @php
 use App\User;
+use App\News;
 @endphp
 @section('content')
 	<div class="row justify-content-center">

@@ -19,3 +19,4 @@ Route::get('/search', 'NewsController@search');
 Route::get('/comments', 'NewsCommentController@index');
 Route::get('/news', 'NewsController@show');
 Route::post('/comment', 'NewsCommentController@store')->middleware('auth');
+Route::get('/comment/reply', 'NewsCommentController@reply')->middleware('auth');
