@@ -27,7 +27,7 @@ class NewsTest extends TestCase
     }
     public function testLogin()
     {
-        $this->post('/')
+
     }
 
 }
