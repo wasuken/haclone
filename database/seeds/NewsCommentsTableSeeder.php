@@ -15,7 +15,7 @@ class NewsCommentsTableSeeder extends Seeder
         //
         $user = App\User::all()->first();
         $news = App\News::all()->first();
-        DB::table('news_comments')->insert([
+        NewsComment::create([
             'user_id' => $user->id,
             'news_id' => $news->id,
             'contents' => Str::random(100),
@@ -24,7 +24,7 @@ class NewsCommentsTableSeeder extends Seeder
                       ->where('user_id', $user->id)
                       ->where('news_id', $news->id)
                       ->first();
-        DB::table('news_comments')->insert([
+        NewsComment::create([
             'user_id' => $user->id,
             'news_id' => $news->id,
             'parent_news_comments_id' => $news_comment->id,

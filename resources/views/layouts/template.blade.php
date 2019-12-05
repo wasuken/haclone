@@ -21,7 +21,8 @@
 			<nav class="navbar bg-dark">
 				<h4><a class="nav-link" href="/">{{ config('app.name', 'Laravel') }}</a></h4>
 				<div class="row">
-					<a class="nav-link" href="/newsList">new</a>
+					<a class="nav-link" href="/newsList">popular</a>
+					<a class="nav-link" href="/newsList?order=latest">new</a>
 					<a class="nav-link" href="/comments">comments</a>
 					<a class="nav-link" href="/news/create">post</a>
 				</div>

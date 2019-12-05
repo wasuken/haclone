@@ -7,13 +7,30 @@ use App\News;
 use App\NewsComment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
 {
     //
-    public function index()
+    public function index(Request $req)
     {
-        $newsList = News::all()->take(30);
+        $order = 'pupular';
+        if(isset($req['order'])){
+            $order = $req['order'];
+        }
+        $newsList = DB::table('news');
+        switch($order){
+        case 'pupular':
+            $newsList = $newsList
+                      ->leftJoin('news_comments', 'news.id', '=', 'news_comments.news_id')
+                      ->select('news.*', DB::raw('count(news.id) as cnt'))
+                      ->groupBy('news.id')->orderBy('cnt', 'desc')
+                      ->orderBy('cnt', 'desc');
+            break;
+        default:         // 該当しない場合は全て最新順
+            $newsList = $newsList->orderBy('created_at', 'desc');
+        }
+        $newsList = $newsList->take(30)->get();
         return view('news.index', ['newsList' => $newsList]);
     }
     public function search(Request $req)
@@ -27,7 +44,8 @@ class NewsController extends Controller
     public function show(Request $req)
     {
         $news = News::find($req['id']);
-        $commentsTree = $this->commentsToContinuousRecur(NewsComment::whereNull('parent_news_comments_id')->get(),
+        $commentsTree = $this->commentsToContinuousRecur(NewsComment::where('news_id', $news->id)
+                                                         ->whereNull('parent_news_comments_id')->get(),
                                                      null,
                                                      $news->id);
         return view('news.show', ['news' => $news, 'commentsTree' => $commentsTree]);
