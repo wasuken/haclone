@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\News;
 use App\NewsComment;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class NewsController extends Controller
 {
@@ -45,5 +46,16 @@ class NewsController extends Controller
         }
         $result['children'] = $children;
         return $result;
+    }
+    public function create()
+    {
+        return view('news.create', []);
+    }
+    public function store(Request $req)
+    {
+        $url = $req->url;
+        $user = Auth::user();
+        News::urlOnlyInGenerate($url, $user->id);
+        return redirect('/newsList');
     }
 }

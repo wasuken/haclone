@@ -18,5 +18,7 @@ Route::get('/newsList', 'NewsController@index');
 Route::get('/search', 'NewsController@search');
 Route::get('/comments', 'NewsCommentController@index');
 Route::get('/news', 'NewsController@show');
+Route::get('/news/create', 'NewsController@create')->middleware('auth');
+Route::post('/news', 'NewsController@store')->middleware('auth');
 Route::post('/comment', 'NewsCommentController@store')->middleware('auth');
 Route::get('/comment/reply', 'NewsCommentController@reply')->middleware('auth');

@@ -23,6 +23,7 @@
 				<div class="row">
 					<a class="nav-link" href="/newsList">new</a>
 					<a class="nav-link" href="/comments">comments</a>
+					<a class="nav-link" href="/news/create">post</a>
 				</div>
 				<div class="row">
 					@guest
