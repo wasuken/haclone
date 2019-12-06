@@ -33,7 +33,7 @@ class NewsController extends Controller
         default:         // 該当しない場合は全て最新順
             $newsList = $newsList->orderBy('created_at', 'desc');
         }
-        $newsList = $newsList->take(30)->get();
+        $newsList = $newsList->paginate(30);
         return view('news.index', ['newsList' => $newsList]);
     }
     public function search(Request $req)
@@ -51,7 +51,9 @@ class NewsController extends Controller
                       ->orWhere('title', 'like', '%' . $req['q'] . '%')
                       ->orWhere('description', 'like', '%' . $req['q'] . '%');
         }
-        return view('news.index', ['newsList' => $newsList->orderBy('created_at')->take(30)->get()]);
+        return view('news.index', ['newsList' => $newsList->orderBy('created_at')->paginate(30),
+                                   'domain' => $req['domain'],
+                                   'q' => $req['q'],]);
     }
     public function show(Request $req)
     {

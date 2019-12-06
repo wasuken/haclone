@@ -39,7 +39,14 @@
 							</div>
 						@endforeach
 					</div>
-
+					<div class="card-header">
+						@php
+						$params = [];
+						if(isset($domain)) $params['domain'] = $domain;
+						if(isset($q)) $params['q'] = $q;
+						@endphp
+						{{$newsList->appends($params)->links()}}
+					</div>
 				</div>
 			</div>
 		</div>
