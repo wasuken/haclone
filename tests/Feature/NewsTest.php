@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\News;
 use App\User;
 
@@ -56,6 +57,30 @@ class NewsTest extends TestCase
         $this->loginLogoutSwitching();
         $this->get('/')->assertSee($this->user->name);
     }
+    public function testLoginFail()
+    {
+        $str = 'うんち';
+        $resp = $this->followingRedirects()->post('/login', [
+            'email' => $this->email . $str,
+            'password' => $this->pwd . $str,
+        ])->assertDontSee($this->user->name)
+              ->assertSee('These credentials do not match our records.');
+        $this->assertFalse(Auth::check());
+    }
+    public function testNewsShow()
+    {
+        $news = News::all()->first();
+        $this->get('/news?id='.$news->id)->assertSee(mb_substr($news->title, 0, 35));
+        $this->followingRedirects()
+            ->get('/news?id=lksajfkdsakfjdsak')
+            ->assertSee('The selected id is invalid.');
+        // ログイン時
+        $this->loginLogoutSwitching();
+        $this->get('/news?id='.$news->id)->assertSee(mb_substr($news->title, 0, 35));
+        $this->followingRedirects()
+            ->get('/news?id=lksajfkdsakfjdsak')
+            ->assertSee('The selected id is invalid.');
+    }
     //
     public function testNewsPost()
     {
@@ -74,16 +99,22 @@ class NewsTest extends TestCase
             'url' => 'https://news.ycombinator.com/',
         ]);
         $this->get('/newsList')->assertSee('Hacker News');
+        $this->followingRedirects()->post('/news', [
+            'url' => 'ガババビッチ',
+        ])->assertSee('The url format is invalid.');
     }
     public function testSearch()
     {
         // 現状はdomainで絞る機能のみ。
+        $errorMsg = 'The domain may not be greater than 100 characters.';
         $title = 'バリデーション 5.8 Laravel';
         $this->get('/search?domain=readouble.com')->assertSee($title);
         $this->get('/search?domain=hogehoge.com')->assertDontSee($title);
+        $this->followingRedirects()->get('/search?domain=' . Str::random(200))->assertSee($errorMsg);
         // ログイン
         $this->loginLogoutSwitching();
         $this->get('/search?domain=readouble.com')->assertSee($title);
         $this->get('/search?domain=hogehoge.com')->assertDontSee($title);
+        $this->followingRedirects()->get('/search?domain=' . Str::random(200))->assertSee($errorMsg);
     }
 }
