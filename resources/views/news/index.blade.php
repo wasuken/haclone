@@ -5,6 +5,16 @@
 		<div class="row justify-content-center">
 			<div class="col-md-8">
 				<div class="card">
+					<div class="card-body">
+						<form action="/search" class="form-group">
+							<input style="width:30%;" class="form-controll" name="q" type="text"
+								   placeholder="キーワード" required/>
+							<input class="btn-primary" type="submit" value="検索"/>
+						</form>
+					</div>
+				</div>
+
+				<div class="card">
 					<div class="card-header">News</div>
 					<div class="card-body">
 						@php

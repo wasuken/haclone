@@ -39,13 +39,19 @@ class NewsController extends Controller
     public function search(Request $req)
     {
         $req->validate([
-            'domain' => 'string|min:0|max:100'
+            'domain' => 'min:3|max:100',
+            'q' => 'min:1|max:100',
         ]);
-        $newsList = News::all()
-                  ->take(30)
-                  ->where('domain', $req['domain'])
-                  ->sortBy('created_at');
-        return view('news.index', ['newsList' => $newsList]);
+        $newsList = News::whereNotNull('id');
+        if(isset($req['domain'])){
+            $newsList = $newsList->where('domain', $req['domain']);
+        }
+        if(isset($req['q'])){
+            $newsList = $newsList->where('domain', 'like', '%' . $req['q'] . '%')
+                      ->orWhere('title', 'like', '%' . $req['q'] . '%')
+                      ->orWhere('description', 'like', '%' . $req['q'] . '%');
+        }
+        return view('news.index', ['newsList' => $newsList->orderBy('created_at')->take(30)->get()]);
     }
     public function show(Request $req)
     {

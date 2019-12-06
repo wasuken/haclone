@@ -106,15 +106,40 @@ class NewsTest extends TestCase
     public function testSearch()
     {
         // 現状はdomainで絞る機能のみ。
-        $errorMsg = 'The domain may not be greater than 100 characters.';
+        $errorMsgList = [];
+        $errorMsgList['domain_greater_than_100'] = 'The domain may not be greater than 100 characters.';
+        $errorMsgList['domain_least_3'] = 'The domain must be at least 3 characters.';
+        $errorMsgList['q_greater_than_100'] = 'The q may not be greater than 100 characters.';
+        $errorMsgList['q_least_1'] = 'The q must be at least 1 characters.';
         $title = 'バリデーション 5.8 Laravel';
+        // no ログイン
         $this->get('/search?domain=readouble.com')->assertSee($title);
         $this->get('/search?domain=hogehoge.com')->assertDontSee($title);
-        $this->followingRedirects()->get('/search?domain=' . Str::random(200))->assertSee($errorMsg);
+        $this->get('/search?q=readouble')->assertSee($title);
+        $this->get('/search?q=hogehoge')->assertDontSee($title);
+        $this->followingRedirects()->get('/search?domain=')
+            ->assertSee($errorMsgList['domain_least_3']);
+        $this->followingRedirects()->get('/search?q=')
+            ->assertSee($errorMsgList['q_least_1']);
+        $this->followingRedirects()->get('/search?q=' . Str::random(200))
+            ->assertSee($errorMsgList['q_greater_than_100']);
+        $this->followingRedirects()
+            ->get('/search?domain=' . Str::random(200))
+            ->assertSee($errorMsgList['domain_greater_than_100']);
         // ログイン
         $this->loginLogoutSwitching();
         $this->get('/search?domain=readouble.com')->assertSee($title);
         $this->get('/search?domain=hogehoge.com')->assertDontSee($title);
-        $this->followingRedirects()->get('/search?domain=' . Str::random(200))->assertSee($errorMsg);
+        $this->get('/search?q=readouble')->assertSee($title);
+        $this->get('/search?q=hogehoge')->assertDontSee($title);
+        $this->followingRedirects()->get('/search?domain=')
+            ->assertSee($errorMsgList['domain_least_3']);
+        $this->followingRedirects()->get('/search?q=')
+            ->assertSee($errorMsgList['q_least_1']);
+        $this->followingRedirects()->get('/search?q=' . Str::random(200))
+            ->assertSee($errorMsgList['q_greater_than_100']);
+        $this->followingRedirects()
+            ->get('/search?domain=' . Str::random(200))
+            ->assertSee($errorMsgList['domain_greater_than_100']);
     }
 }
