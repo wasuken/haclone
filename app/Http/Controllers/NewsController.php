@@ -14,6 +14,9 @@ class NewsController extends Controller
     //
     public function index(Request $req)
     {
+        $req->validate([
+            'order' => 'string|min:0|max:30',
+        ]);
         $order = 'pupular';
         if(isset($req['order'])){
             $order = $req['order'];
@@ -35,6 +38,9 @@ class NewsController extends Controller
     }
     public function search(Request $req)
     {
+        $req->validate([
+            'domain' => 'string|min:0|max:100'
+        ]);
         $newsList = News::all()
                   ->take(30)
                   ->where('domain', $req['domain'])
@@ -43,6 +49,9 @@ class NewsController extends Controller
     }
     public function show(Request $req)
     {
+        $req->validate([
+            'id' => 'unique:news,id',
+        ]);
         $news = News::find($req['id']);
         $commentsTree = $this->commentsToContinuousRecur(NewsComment::where('news_id', $news->id)
                                                          ->whereNull('parent_news_comments_id')->get(),
@@ -71,6 +80,9 @@ class NewsController extends Controller
     }
     public function store(Request $req)
     {
+        $req->validate([
+            'url' => 'required|url',
+        ]);
         $url = $req->url;
         $user = Auth::user();
         News::urlOnlyInGenerate($url, $user->id);
