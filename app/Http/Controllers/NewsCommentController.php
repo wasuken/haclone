@@ -12,7 +12,7 @@ class NewsCommentController extends Controller
     //
     public function index()
     {
-        $comments = NewsComment::all()->sortBy('create_at');
+        $comments = NewsComment::orderBy('create_at')->paginate(30);
         return view('comments.index', ['comments' => $comments]);
     }
     public function reply(Request $req)

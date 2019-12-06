@@ -25,6 +25,9 @@ use App\News;
 						</div>
 					@endforeach
 				</div>
+				<div class="card-footer">
+					{{$comments->links()}}
+				</div>
 			</div>
 		</div>
 	</div>
