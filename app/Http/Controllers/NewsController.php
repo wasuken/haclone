@@ -50,7 +50,7 @@ class NewsController extends Controller
     public function show(Request $req)
     {
         $req->validate([
-            'id' => 'unique:news,id',
+            'id' => 'required|exists:news,id',
         ]);
         $news = News::find($req['id']);
         $commentsTree = $this->commentsToContinuousRecur(NewsComment::where('news_id', $news->id)
